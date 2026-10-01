@@ -1,0 +1,6 @@
+{
+  "name": "Section Lobby",
+  "description": "A private digital headquarters and organized section lobby for academic classes, featuring structured JSON imports, deadline tracking, and announcements.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
