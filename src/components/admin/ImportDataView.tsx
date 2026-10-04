@@ -17,7 +17,8 @@ import {
   CheckSquare,
   FileText,
   Calendar,
-  FolderGit2
+  FolderGit2,
+  ExternalLink,
 } from 'lucide-react';
 import { 
   validateImportBatch, 
@@ -476,6 +477,16 @@ export function ImportDataView({ sectionId, onImportSuccess }: ImportDataViewPro
                       )}
                     </div>
 
+                    {/* Note / Resource URL badge */}
+                    {data.url && (
+                      <div className="mt-2.5 inline-flex items-center gap-1.5 text-xs text-blue-700 bg-blue-50 border border-blue-100/80 px-2 py-0.5 rounded-md">
+                        <ExternalLink className="w-3 h-3 text-blue-500 shrink-0" />
+                        <span className="font-medium">
+                          {itemResult.itemType === 'note' ? '📄 Source Material' : 'Resource Link'}
+                        </span>
+                      </div>
+                    )}
+
                     {/* Preserved Raw Source Excerpt */}
                     {(item?.source_text || raw?.source_text) && (
                       <div className="mt-2.5 pt-2 border-t border-neutral-200/60 text-[11px] text-neutral-500 italic font-mono truncate">
@@ -601,6 +612,34 @@ export function ImportDataView({ sectionId, onImportSuccess }: ImportDataViewPro
                         data: { ...editFormData.data, starts_at: e.target.value },
                       })
                     }
+                    className="w-full text-xs font-mono p-2.5 rounded-lg border border-neutral-300 outline-hidden focus:border-neutral-900"
+                  />
+                </div>
+              )}
+
+              {/* URL if Note or Resource */}
+              {(editFormData.type === 'resource' || editFormData.type === 'note') && (
+                <div>
+                  <label className="text-xs font-semibold text-neutral-700 block mb-1">
+                    {editFormData.type === 'note' ? 'Source Material URL (Optional)' : 'Resource URL'}
+                  </label>
+                  <input
+                    type="url"
+                    value={editFormData.data.url || ''}
+                    onChange={(e) => {
+                      const val = e.target.value.trim();
+                      const updatedData = { ...editFormData.data };
+                      if (val) {
+                        updatedData.url = val;
+                      } else {
+                        delete updatedData.url;
+                      }
+                      setEditFormData({
+                        ...editFormData,
+                        data: updatedData,
+                      });
+                    }}
+                    placeholder="https://drive.google.com/..."
                     className="w-full text-xs font-mono p-2.5 rounded-lg border border-neutral-300 outline-hidden focus:border-neutral-900"
                   />
                 </div>

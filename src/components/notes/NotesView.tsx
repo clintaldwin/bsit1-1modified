@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { FileText, User, Filter, Search } from 'lucide-react';
+import { FileText, User, Filter, Search, ExternalLink } from 'lucide-react';
 import { Note } from '@/types/database';
 import { EmptyState } from '../common/EmptyState';
 
@@ -139,6 +139,25 @@ export function NotesView({ notes, onSelectNote }: NotesViewProps) {
                 <p className="text-xs text-neutral-600 line-clamp-4 leading-relaxed whitespace-pre-line">
                   {note.content}
                 </p>
+
+                {note.url && (
+                  <div className="mt-3 flex items-center justify-between gap-2 pt-2 border-t border-neutral-100/70">
+                    <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 text-[11px] font-medium border border-blue-100">
+                      <span>📄 Source Material</span>
+                    </span>
+                    <a
+                      href={note.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="inline-flex items-center gap-1 text-[11px] text-blue-600 hover:text-blue-800 font-medium hover:underline"
+                      title="Open source material directly"
+                    >
+                      <span>Open Source Material</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </div>
+                )}
               </div>
 
               <div className="pt-3 mt-4 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-500 font-mono">

@@ -76,6 +76,13 @@ export const NoteDataSchema = z.object({
   content: z.string().min(3, 'Note content or study material is required'),
   subject: z.string().optional(),
   author: z.string().optional(),
+  url: z
+    .string()
+    .url('Must be a valid URL (e.g. https://drive.google.com/...)')
+    .refine((val) => val.trim().length > 0 && !val.toLowerCase().includes('placeholder'), {
+      message: 'Invalid or placeholder URL',
+    })
+    .optional(),
 });
 
 export const NoteItemSchema = z.object({

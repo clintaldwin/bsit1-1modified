@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileText, ArrowRight, User } from 'lucide-react';
+import { FileText, ArrowRight, User, ExternalLink } from 'lucide-react';
 import { Note } from '@/types/database';
 import { EmptyState } from '../common/EmptyState';
 
@@ -61,6 +61,12 @@ export function RecentNotesSection({
                 <p className="text-xs text-neutral-500 line-clamp-3 leading-relaxed">
                   {note.content}
                 </p>
+                {note.url && (
+                  <div className="mt-2 flex items-center gap-1 text-[11px] text-blue-600 font-medium">
+                    <ExternalLink className="w-3 h-3 text-blue-500 shrink-0" />
+                    <span>📄 Source Material</span>
+                  </div>
+                )}
               </div>
 
               <div className="flex items-center gap-1 text-[11px] text-neutral-400 mt-3 pt-2.5 border-t border-neutral-100 font-mono">

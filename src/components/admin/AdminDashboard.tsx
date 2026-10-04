@@ -183,6 +183,7 @@ export function AdminDashboard({
             title: formFields.title,
             content: formFields.content,
             author: formFields.author || 'Section Admin',
+            url: formFields.url ? formFields.url.trim() : undefined,
             status: 'published',
           });
           break;
@@ -683,13 +684,13 @@ export function AdminDashboard({
             </div>
 
             <div className="p-6 overflow-y-auto space-y-3">
-              {showCreateModal === 'assignments' && (
+              {(showCreateModal === 'assignments' || showCreateModal === 'notes') && (
                 <div>
-                  <label className="text-xs font-semibold text-neutral-700 block mb-1">Subject</label>
+                  <label className="text-xs font-semibold text-neutral-700 block mb-1">Subject / Course</label>
                   <input
                     type="text"
-                    placeholder="e.g. CS 312 Database Systems"
-                    value={formFields.subject}
+                    placeholder="e.g. IT 112 Computer Programming 1"
+                    value={formFields.subject || ''}
                     onChange={(e) => setFormFields({ ...formFields, subject: e.target.value })}
                     className="w-full text-xs p-2.5 rounded-lg border border-neutral-300 outline-hidden"
                   />
@@ -759,13 +760,15 @@ export function AdminDashboard({
                 </>
               )}
 
-              {showCreateModal === 'resources' && (
+              {(showCreateModal === 'resources' || showCreateModal === 'notes') && (
                 <div>
-                  <label className="text-xs font-semibold text-neutral-700 block mb-1">URL Link</label>
+                  <label className="text-xs font-semibold text-neutral-700 block mb-1">
+                    {showCreateModal === 'notes' ? 'Source Material URL (Optional)' : 'URL Link'}
+                  </label>
                   <input
                     type="url"
                     placeholder="https://drive.google.com/..."
-                    value={formFields.url}
+                    value={formFields.url || ''}
                     onChange={(e) => setFormFields({ ...formFields, url: e.target.value })}
                     className="w-full text-xs p-2.5 rounded-lg border border-neutral-300 outline-hidden"
                   />

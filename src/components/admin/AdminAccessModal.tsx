@@ -33,7 +33,7 @@ export function AdminAccessModal({
       // Ensure Supabase anonymous session is active
       ensureAnonymousSession().then((session) => {
         if (!isSupabaseConfigured) {
-          setSessionNotice('Supabase environment variables (VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY) are not configured.');
+          setSessionNotice('Local mode active (Supabase credentials not configured). Enter default code "admin_only" to access the Admin Console.');
         } else if (!session) {
           setSessionNotice('Unable to establish Supabase session.');
         } else {

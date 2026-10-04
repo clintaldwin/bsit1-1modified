@@ -88,6 +88,7 @@ export interface Note {
   content: string;
   author: string;
   status: NoteStatus;
+  url?: string;
   source_text?: string;
   created_at: string;
   updated_at: string;

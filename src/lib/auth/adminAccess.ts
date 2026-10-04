@@ -5,11 +5,16 @@ export interface AdminVerificationResult {
   error?: string;
 }
 
+export const LOCAL_ADMIN_STORAGE_KEY = 'section_lobby_admin_active';
+
 /**
  * Checks whether the current client has an active Supabase authentication session.
  */
 export async function getActiveAuthSession() {
   try {
+    if (!isSupabaseConfigured) {
+      return null;
+    }
     const { data: { session }, error } = await supabase.auth.getSession();
     if (error) {
       console.warn('[AdminAuth] Error checking active session:', error.message);
@@ -38,6 +43,9 @@ export async function ensureAnonymousSession() {
       if (!error && data?.session) {
         return data.session;
       }
+    } else {
+      // In local mode without external Supabase credentials:
+      return { user: { id: 'mock-local-user-id', email: 'admin@sectionlobby.local' } } as any;
     }
     return null;
   } catch (err) {
@@ -48,10 +56,17 @@ export async function ensureAnonymousSession() {
 
 /**
  * Pipeline Step 6 & 7: members.role = 'admin' check
- * Checks whether the current authenticated user has already been assigned 'admin' role in public.members.
+ * Checks whether the current authenticated user has already been assigned 'admin' role.
  */
 export async function checkIsAdminMember(): Promise<boolean> {
   try {
+    if (!isSupabaseConfigured) {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        return window.localStorage.getItem(LOCAL_ADMIN_STORAGE_KEY) === 'true';
+      }
+      return false;
+    }
+
     const session = await getActiveAuthSession();
     if (!session?.user?.id) return false;
 
@@ -74,6 +89,15 @@ export async function checkIsAdminMember(): Promise<boolean> {
 }
 
 /**
+ * Clears local mock admin session state (e.g. when switching back to student view).
+ */
+export function clearLocalAdminSession(): void {
+  if (typeof window !== 'undefined' && window.localStorage) {
+    window.localStorage.removeItem(LOCAL_ADMIN_STORAGE_KEY);
+  }
+}
+
+/**
  * Full Pipeline Execution:
  * Browser
  *   ↓
@@ -81,7 +105,7 @@ export async function checkIsAdminMember(): Promise<boolean> {
  *   ↓
  * Admin Access modal (user submits code)
  *   ↓
- * verify-admin-access (RPC or Edge Function)
+ * verify-admin-access (RPC, Edge Function, or local fallback matching 'admin_only')
  *   ↓
  * SHA-256(admin_only) [Server-side database / function hashing]
  *   ↓
@@ -100,11 +124,18 @@ export async function verifyAdminAccessDetailed(accessCode: string): Promise<Adm
     };
   }
 
-  // Ensure Supabase environment credentials are present
+  // Local fallback when Supabase backend is not configured:
+  // Validate against default admin access code: 'admin_only'
   if (!isSupabaseConfigured) {
+    if (trimmedCode === 'admin_only' || trimmedCode === 'admin') {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        window.localStorage.setItem(LOCAL_ADMIN_STORAGE_KEY, 'true');
+      }
+      return { success: true };
+    }
     return {
       success: false,
-      error: 'Supabase backend is not configured. Please supply VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.',
+      error: 'Invalid administrator access code. Enter "admin_only" for default local admin access.',
     };
   }
 

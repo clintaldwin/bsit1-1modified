@@ -49,7 +49,8 @@ You MUST format your output strictly as a JSON object adhering to Version 1.0 sc
         "title": "<Topic/Title>",
         "content": "<Summary or reviewer notes>",
         "subject": "<Subject name, optional>",
-        "author": "<Professor or student contributor, optional>"
+        "author": "<Professor or student contributor, optional>",
+        "url": "<Valid source material URL e.g. https://drive.google.com/..., optional>"
       }
     },
     {
@@ -76,12 +77,37 @@ You MUST format your output strictly as a JSON object adhering to Version 1.0 sc
   ]
 }
 
+NOTES AND STUDY MATERIALS RULES:
+- A study material, reviewer, module, lecture summary, or cheat sheet should be represented as a "note" even when it has an associated source URL (such as a Google Drive link to a PDF, PPT, module, or reviewer).
+- Do NOT convert a linked study note into a resource merely because it has a URL. Resources are reserved for generic standalone tools, repositories, or external websites.
+- Preserve a provided Google Drive URL exactly. If the source contains a URL and it clearly belongs to the study material, place it in note.data.url.
+- If no URL is provided, omit the url field.
+- Never output null.
+- Never fabricate a Drive URL or use placeholder URLs.
+
+Example:
+Input:
+"IT 112 reviewer. C Programming Module Clean.pdf
+https://drive.google.com/file/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/view"
+
+Output:
+{
+  "type": "note",
+  "source_text": "IT 112 reviewer. C Programming Module Clean.pdf https://drive.google.com/file/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/view",
+  "data": {
+    "title": "C Programming Module Clean Reviewer",
+    "content": "Lecture notes and exam reviewer covering basic syntax, control structures, and loops in C.",
+    "subject": "IT 112 Computer Programming 1",
+    "url": "https://drive.google.com/file/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/view"
+  }
+}
+
 Only output valid, raw JSON. Do not surround with markdown backticks or commentary.`;
 
 export const SAMPLE_BATCH_BSIT_11 = JSON.stringify(
   {
     version: "1.0",
-    source_text: "Guys deadline sa programming exercise Friday 11:59 PM. Quiz sa intro to computing on Monday. Bring printed copy of lab sheet.",
+    source_text: "Guys deadline sa programming exercise Friday 11:59 PM. Quiz sa intro to computing on Monday. Bring printed copy of lab sheet. Eto reviewer sa C programming: https://drive.google.com/file/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/view",
     items: [
       {
         type: "assignment",
@@ -92,6 +118,17 @@ export const SAMPLE_BATCH_BSIT_11 = JSON.stringify(
           description: "Submit your source code (.java / .py) and 1 printed copy of the output flowcharts.",
           due_at: "2026-10-02T23:59:00+08:00",
           priority: "high"
+        }
+      },
+      {
+        type: "note",
+        source_text: "Eto reviewer sa C programming: https://drive.google.com/file/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/view",
+        data: {
+          title: "C Programming Module Clean",
+          content: "Comprehensive reviewer and lecture notes covering conditional branching (if-else, switch-case) and iteration structures (while, do-while, for loops).",
+          subject: "IT 112 Computer Programming 1",
+          author: "Prof. Santos",
+          url: "https://drive.google.com/file/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/view"
         }
       },
       {

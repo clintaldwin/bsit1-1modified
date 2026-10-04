@@ -19,7 +19,7 @@ import { NotesView } from './components/notes/NotesView';
 import { ResourcesView } from './components/resources/ResourcesView';
 import { AdminDashboard } from './components/admin/AdminDashboard';
 import { AdminAccessModal } from './components/admin/AdminAccessModal';
-import { ensureAnonymousSession, checkIsAdminMember } from './lib/auth/adminAccess';
+import { ensureAnonymousSession, checkIsAdminMember, clearLocalAdminSession } from './lib/auth/adminAccess';
 import { EntityType } from './types/database';
 
 function MainContent() {
@@ -83,6 +83,7 @@ function MainContent() {
 
   const handleToggleAdminMode = () => {
     if (isAdminMode) {
+      clearLocalAdminSession();
       setIsAdminMode(false);
       setActiveTab('lobby');
       showToast('Switched to Student View', 'Viewing Section Lobby as a class member.', 'info');
@@ -170,6 +171,7 @@ function MainContent() {
             members={members}
             onResetData={handleResetData}
             onNavigateToLobby={() => {
+              clearLocalAdminSession();
               setIsAdminMode(false);
               setActiveTab('lobby');
             }}

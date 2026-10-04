@@ -148,16 +148,16 @@ export function ItemDetailModal({
             </div>
           </div>
 
-          {/* External URL if resource */}
+          {/* External URL if note or resource */}
           {item.url && (
             <div className="pt-2">
               <a
                 href={item.url}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-neutral-900 text-white text-xs font-medium rounded-lg hover:bg-neutral-800 transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-neutral-900 text-white text-xs font-medium rounded-lg hover:bg-neutral-800 transition-colors shadow-xs"
               >
-                <span>Open Resource Link</span>
+                <span>{isNote ? 'Open Source Material' : 'Open Resource Link'}</span>
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
             </div>
